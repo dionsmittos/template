@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atelier Software — Maatwerk software op aanvraag</title>
+  <meta name="description" content="Wij bouwen maatwerk software die voelt als een product — snel, veilig en onderhoudbaar. Voor organisaties die kwaliteit serieus nemen." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* ─────────────────────────────
+       TOKENS
+    ───────────────────────────── */
+    :root {
+      --bg:       #FBF9F7;
+      --ink:      #121212;
+      --charcoal: #1C1A19;
+      --hairline: #E7E0DA;
+      --surface:  #F3EEE9;
+      --accent:   #B24A2F;
+      --accent-h: #9A3D25;
+
+      --f-head: 'Fraunces', Georgia, serif;
+      --f-body: 'Plus Jakarta Sans', sans-serif;
+
+      --s1:  8px;  --s2: 16px; --s3: 24px; --s4: 32px;
+      --s5: 40px; --s6: 48px; --s8: 64px; --s12: 96px; --s16: 128px;
+
+      --max: 1280px;
+      --nav-h: 64px;
+      --ease: cubic-bezier(0.33, 1, 0.68, 1);
+      --ease-in: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    /* ─────────────────────────────
+       RESET
+    ───────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 220px 220px;
+      opacity: 0.022;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─────────────────────────────
+       TYPOGRAPHY
+    ───────────────────────────── */
+    h1, h2, h3, h4 {
+      font-family: var(--f-head);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    h1 { font-size: clamp(2.6rem, 6vw, 5.5rem); }
+    h2 { font-size: clamp(2rem, 4vw, 3.75rem); }
+    h3 { font-size: clamp(1.15rem, 2vw, 1.5rem); }
+
+    p { color: var(--charcoal); }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─────────────────────────────
+       UTILITIES
+    ───────────────────────────── */
+    .wrap {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--s3);
+    }
+    @media (min-width: 768px) { .wrap { padding: 0 var(--s6); } }
+
+    .eyebrow {
+      font-family: var(--f-body);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    hr.rule {
+      border: none;
+      border-top: 1px solid var(--hairline);
+    }
+
+    /* Scroll reveal */
+    .sr {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+    }
+    .sr.on { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .sr { opacity: 1; transform: none; transition: none; } }
+
+    /* ─────────────────────────────
+       BUTTONS
+    ───────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-family: var(--f-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background-color 0.2s, border-color 0.2s;
+      line-height: 1;
+    }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn:active { transform: scale(0.975) !important; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-h); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(178,74,47,.28); }
+
+    .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--hairline); }
+    .btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(18,18,18,.08); }
+
+    .btn-ghost-white { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.25); }
+    .btn-ghost-white:hover { border-color: rgba(255,255,255,.6); transform: translateY(-2px); }
+
+    /* ─────────────────────────────
+       HEADER
+    ───────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251,249,247,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--hairline);
+      transition: box-shadow 0.3s;
+    }
+    .site-header.scrolled { box-shadow: 0 2px 24px rgba(18,18,18,.07); }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--nav-h);
+    }
+
+    .nav-logo {
+      font-family: var(--f-head);
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo:focus-visible { outline: 2px solid var(--accent); border-radius: 3px; }
+
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: var(--s5);
+      align-items: center;
+    }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+    .nav-cta { display: none; }
+    @media (min-width: 768px) { .nav-cta { display: inline-flex; } }
+
+    .mobile-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .mobile-btn:hover { background: var(--surface); }
+    .mobile-btn:focus-visible { outline: 2px solid var(--accent); }
+    @media (min-width: 768px) { .mobile-btn { display: none; } }
+
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      padding: var(--s3) 0 var(--s4);
+      border-top: 1px solid var(--hairline);
+      gap: 0;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      padding: 14px 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      border-bottom: 1px solid var(--hairline);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--ink); }
+    .mobile-menu .btn { margin-top: var(--s3); width: fit-content; }
+
+    /* ─────────────────────────────
+       HERO
+    ───────────────────────────── */
+    .hero { padding: var(--s12) 0 var(--s16); }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s8);
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 7fr 5fr;
+        gap: clamp(48px, 6vw, 96px);
+      }
+    }
+
+    .hero-kicker {
+      display: flex;
+      align-items: center;
+      gap: var(--s2);
+      margin-bottom: var(--s4);
+    }
+    .hero-kicker-line { width: 28px; height: 1.5px; background: var(--accent); }
+
+    .hero h1 { margin-bottom: var(--s4); max-width: 15ch; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      line-height: 1.75;
+      color: var(--charcoal);
+      max-width: 46ch;
+      margin-bottom: var(--s6);
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; }
+
+    /* Hero image */
+    .hero-img-wrap { position: relative; }
+
+    .hero-photo {
+      width: 100%;
+      border-radius: 14px;
+      display: block;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      box-shadow: 0 28px 72px rgba(18,18,18,.13);
+    }
+    @media (min-width: 1024px) { .hero-photo { aspect-ratio: 3/4; } }
+
+    .hero-badge {
+      position: absolute;
+      bottom: var(--s3);
+      left: var(--s3);
+      background: rgba(251,249,247,.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .hero-badge-dot {
+      width: 7px; height: 7px;
+      background: #22C55E;
+      border-radius: 50%;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .photo-caption {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: var(--charcoal);
+      opacity: 0.5;
+      font-style: italic;
+    }
+
+    /* ─────────────────────────────
+       CREDIBILITY
+    ───────────────────────────── */
+    .credibility {
+      padding: var(--s8) 0;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .cred-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s6);
+    }
+    @media (min-width: 640px) { .cred-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .cred-item { display: flex; flex-direction: column; gap: 6px; }
+
+    .cred-num {
+      font-family: var(--f-head);
+      font-size: clamp(2.4rem, 4vw, 3.2rem);
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .cred-label { font-weight: 600; font-size: 0.95rem; }
+    .cred-desc { font-size: 0.85rem; line-height: 1.55; opacity: 0.75; }
+
+    .logo-strip { margin-top: var(--s8); padding-top: var(--s6); border-top: 1px solid var(--hairline); }
+    .logo-strip-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      opacity: 0.45;
+      margin-bottom: var(--s3);
+    }
+    .logo-items { display: flex; flex-wrap: wrap; gap: var(--s5); align-items: center; }
+    .logo-item {
+      font-family: var(--f-head);
+      font-size: 1.05rem;
+      color: var(--charcoal);
+      opacity: 0.3;
+      transition: opacity 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .logo-item:hover { opacity: 0.55; }
+
+    /* ─────────────────────────────
+       SECTION WRAPPER
+    ───────────────────────────── */
+    .section { padding: var(--s12) 0; }
+    @media (min-width: 1024px) { .section { padding: var(--s16) 0; } }
+
+    .sec-head { margin-bottom: var(--s8); }
+    @media (min-width: 1024px) { .sec-head { margin-bottom: var(--s12); } }
+
+    .sec-head h2 { margin-top: var(--s2); max-width: 20ch; }
+
+    /* ─────────────────────────────
+       SERVICES
+    ───────────────────────────── */
+    /* Feature card — full width */
+    .svc-feature {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: var(--s6);
+      margin-bottom: var(--s2);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s4);
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+    @media (min-width: 768px) {
+      .svc-feature {
+        grid-template-columns: 1fr 1fr;
+        padding: var(--s8);
+        gap: var(--s8);
+        align-items: start;
+      }
+    }
+    .svc-feature:hover { transform: translateY(-3px); box-shadow: 0 14px 48px rgba(18,18,18,.09); }
+
+    .svc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s2);
+    }
+    @media (min-width: 640px) { .svc-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .svc-card {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: var(--s5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s3);
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+    .svc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(18,18,18,.09); }
+
+    .svc-icon {
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(178,74,47,.1);
+      border-radius: 10px;
+      color: var(--accent);
+    }
+
+    .svc-card h3, .svc-feature h3 { font-size: 1.35rem; }
+    .svc-card p, .svc-feature p { font-size: 0.88rem; line-height: 1.7; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: var(--s2); }
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: var(--hairline);
+      color: var(--charcoal);
+    }
+
+    /* ─────────────────────────────
+       TIMELINE / AANPAK
+    ───────────────────────────── */
+    .aanpak-section {
+      background: var(--surface);
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: var(--s4);
+      padding: var(--s5) 0;
+      border-bottom: 1px solid var(--hairline);
+      align-items: start;
+    }
+    .tl-item:last-child { border-bottom: none; }
+
+    @media (min-width: 768px) {
+      .tl-item {
+        grid-template-columns: 80px 1fr 1fr;
+        gap: var(--s6);
+        padding: var(--s6) 0;
+        align-items: center;
+      }
+    }
+
+    .tl-num {
+      font-family: var(--f-head);
+      font-size: 2rem;
+      color: var(--hairline);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      padding-top: 4px;
+    }
+
+    .tl-content h3 { font-size: 1.1rem; margin-bottom: 6px; }
+    .tl-content p { font-size: 0.85rem; line-height: 1.65; }
+    .tl-content .tags { padding-top: var(--s2); }
+
+    .tl-meta {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .tl-meta {
+        display: block;
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--charcoal);
+        opacity: 0.5;
+        font-style: italic;
+      }
+    }
+
+    /* ─────────────────────────────
+       CASES
+    ───────────────────────────── */
+    .cases-section { background: var(--ink); }
+    .cases-section .eyebrow { color: rgba(255,255,255,.4); }
+    .cases-section h2 { color: #fff; }
+    .cases-section .sec-head p { color: rgba(255,255,255,.6); }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s3);
+    }
+    @media (min-width: 768px) {
+      .cases-grid {
+        grid-template-columns: 5fr 7fr;
+        grid-template-rows: auto auto;
+      }
+      .case-card:first-child {
+        grid-row: 1 / 3;
+      }
+      .cases-col {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: var(--s3);
+      }
+    }
+
+    .case-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: var(--s6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s3);
+      transition: border-color 0.25s, transform 0.25s var(--ease);
+      color: #fff;
+    }
+    .case-card:hover { border-color: rgba(255,255,255,.2); transform: translateY(-3px); }
+
+    @media (min-width: 768px) {
+      .case-card:first-child { padding: var(--s8); }
+    }
+
+    .case-sector {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+    }
+    .case-card h3 { color: #fff; font-size: clamp(1.1rem, 2vw, 1.5rem); }
+    .case-problem { font-size: 0.875rem; color: rgba(255,255,255,.55); line-height: 1.65; }
+
+    .case-metric { margin-top: auto; padding-top: var(--s4); border-top: 1px solid rgba(255,255,255,.08); }
+    .case-metric-num {
+      font-family: var(--f-head);
+      font-size: clamp(2.2rem, 3.5vw, 3rem);
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .case-metric-label { font-size: 0.78rem; color: rgba(255,255,255,.4); margin-top: 4px; }
+
+    .case-stack {
+      font-size: 0.73rem;
+      color: rgba(255,255,255,.28);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ─────────────────────────────
+       SECURITY
+    ───────────────────────────── */
+    .security-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s8);
+    }
+    @media (min-width: 1024px) {
+      .security-grid {
+        grid-template-columns: 7fr 5fr;
+        gap: var(--s12);
+        align-items: start;
+      }
+    }
+
+    .security-list { display: flex; flex-direction: column; gap: var(--s2); margin-top: var(--s6); }
+
+    .sec-item {
+      display: flex;
+      gap: var(--s3);
+      align-items: flex-start;
+      padding: var(--s3);
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .sec-item:hover { background: var(--surface); }
+
+    .sec-item-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(178,74,47,.1);
+      border-radius: 8px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .sec-item-body h4 {
+      font-family: var(--f-head);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .sec-item-body p { font-size: 0.84rem; line-height: 1.55; }
+
+    .sec-photo {
+      width: 100%;
+      border-radius: 14px;
+      display: block;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      box-shadow: 0 24px 64px rgba(18,18,18,.13);
+    }
+
+    /* ─────────────────────────────
+       PRICING
+    ───────────────────────────── */
+    .pricing-section {
+      background: var(--charcoal);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .pricing-section .eyebrow { color: rgba(255,255,255,.35); }
+    .pricing-section h2 { color: #fff; }
+    .pricing-section .sec-head p { color: rgba(255,255,255,.55); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s4);
+    }
+    @media (min-width: 768px) { .pricing-grid { grid-template-columns: 1fr 1fr; } }
+
+    .pricing-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: var(--s8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s4);
+      transition: transform 0.25s var(--ease), border-color 0.25s;
+    }
+    .pricing-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.22); }
+
+    .pricing-name {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.38);
+    }
+    .pricing-price {
+      font-family: var(--f-head);
+      font-size: clamp(2.4rem, 3vw, 3rem);
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .pricing-price sub {
+      font-size: 0.95rem;
+      opacity: .45;
+      font-family: var(--f-body);
+      font-weight: 400;
+      vertical-align: baseline;
+    }
+    .pricing-desc { font-size: 0.875rem; color: rgba(255,255,255,.6); line-height: 1.7; }
+
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,.72);
+      line-height: 1.5;
+    }
+    .pricing-features li svg { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+    /* ─────────────────────────────
+       CONTACT
+    ───────────────────────────── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s8);
+    }
+    @media (min-width: 1024px) {
+      .contact-grid {
+        grid-template-columns: 5fr 7fr;
+        gap: var(--s12);
+        align-items: start;
+      }
+    }
+
+    .contact-photo {
+      width: 100%;
+      border-radius: 14px;
+      display: block;
+      aspect-ratio: 3/2;
+      object-fit: cover;
+      box-shadow: 0 24px 72px rgba(18,18,18,.12);
+    }
+
+    .contact-intro { margin-bottom: var(--s6); }
+    .contact-intro h2 { margin-top: var(--s2); margin-bottom: var(--s3); }
+    .contact-intro p { font-size: 1.05rem; line-height: 1.75; }
+
+    .form { display: flex; flex-direction: column; gap: var(--s3); }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1.5px solid var(--hairline);
+      border-radius: 8px;
+      font-family: var(--f-body);
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(178,74,47,.12);
+    }
+    .form-input.error { border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 140px; line-height: 1.6; }
+
+    .form-success {
+      display: none;
+      padding: var(--s6);
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .form-success.show { display: block; }
+    .form-success h3 { font-size: 1.3rem; margin: var(--s2) 0; }
+    .form-success p { font-size: 0.875rem; }
+
+    /* ─────────────────────────────
+       FOOTER
+    ───────────────────────────── */
+    .footer {
+      background: var(--ink);
+      color: rgba(255,255,255,.5);
+    }
+
+    .footer-top {
+      padding: var(--s12) 0 var(--s8);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s8);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    @media (min-width: 768px) { .footer-top { grid-template-columns: 2fr 1fr 1fr; } }
+
+    .footer-name {
+      font-family: var(--f-head);
+      font-size: 1.2rem;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--s3);
+    }
+    .footer-desc { font-size: 0.84rem; line-height: 1.65; max-width: 34ch; }
+
+    .footer-col-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.25);
+      margin-bottom: var(--s3);
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,.5);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-links a:focus-visible { outline: 2px solid var(--accent); border-radius: 3px; }
+
+    .footer-bottom {
+      padding: var(--s5) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s2);
+      font-size: 0.78rem;
+    }
+    @media (min-width: 640px) {
+      .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     HEADER
+════════════════════════════════ -->
+<header class="site-header" id="site-header" role="banner">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" aria-label="Atelier Software — terug naar boven">Atelier</a>
+
+      <nav aria-label="Hoofdnavigatie">
+        <ul class="nav-links">
+          <li><a href="#diensten">Diensten</a></li>
+          <li><a href="#aanpak">Aanpak</a></li>
+          <li><a href="#cases">Cases</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <a href="#contact" class="btn btn-primary nav-cta">Plan een intake</a>
+
+      <button
+        class="mobile-btn"
+        id="mobile-toggle"
+        aria-label="Menu openen"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobiele navigatie">
+      <a href="#diensten">Diensten</a>
+      <a href="#aanpak">Aanpak</a>
+      <a href="#cases">Cases</a>
+      <a href="#security">Security</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="btn btn-primary">Plan een intake</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <!-- Text -->
+      <div class="sr">
+        <div class="hero-kicker">
+          <div class="hero-kicker-line" aria-hidden="true"></div>
+          <span class="eyebrow">Maatwerk software op aanvraag</span>
+        </div>
+
+        <h1 id="hero-heading">
+          Software die voelt als<br>een <em>product.</em>
+        </h1>
+
+        <p class="hero-sub">
+          Wij bouwen maatwerk applicaties voor organisaties die kwaliteit serieus nemen — snel, veilig en onderhoudbaar. Geen standaardpakket. Geen compromissen.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">
+            Plan een intake
+            <i data-lucide="arrow-right" aria-hidden="true" width="16" height="16"></i>
+          </a>
+          <a href="#aanpak" class="btn btn-ghost">Bekijk aanpak</a>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="hero-img-wrap sr" style="transition-delay:.15s">
+        <img
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
+          alt="Licht, minimalistisch kantoor met lange houten tafels en grote ramen — een rustige omgeving voor geconcentreerd werken"
+          class="hero-photo"
+          width="800"
+          height="1000"
+          fetchpriority="high"
+        />
+        <div class="hero-badge" aria-hidden="true">
+          <div class="hero-badge-dot"></div>
+          <span>Actieve projecten lopend</span>
+        </div>
+        <p class="photo-caption">Amsterdam — atelier, 2024</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     CREDIBILITY
+════════════════════════════════ -->
+<section class="credibility sr" aria-label="Kengetallen en referenties">
+  <div class="wrap">
+
+    <div class="cred-grid">
+      <div class="cred-item">
+        <span class="cred-num" aria-label="Meer dan tien jaar">10+</span>
+        <span class="cred-label">Jaar seniorniveau</span>
+        <p class="cred-desc">Elk traject geleid door engineers met aantoonbare productervaring, geen juniors op kritieke paden.</p>
+      </div>
+      <div class="cred-item">
+        <span class="cred-num" aria-label="Zes tot twaalf weken">6–12w</span>
+        <span class="cred-label">Van intake tot release</span>
+        <p class="cred-desc">Strakke doorlooptijden met wekelijkse check-ins — zonder concessies aan kwaliteit of veiligheid.</p>
+      </div>
+      <div class="cred-item">
+        <span class="cred-num" aria-label="Honderd procent">100%</span>
+        <span class="cred-label">Code review & testen</span>
+        <p class="cred-desc">Elke wijziging gereviewed. Geautomatiseerde tests op kritieke paden. Documentatie standaard inbegrepen.</p>
+      </div>
+    </div>
+
+    <div class="logo-strip">
+      <p class="logo-strip-label">Geselecteerde opdrachtgevers</p>
+      <div class="logo-items" aria-label="Referenties">
+        <span class="logo-item">Velotis</span>
+        <span class="logo-item">Nordvik Group</span>
+        <span class="logo-item">Stratum Partners</span>
+        <span class="logo-item">Odera</span>
+        <span class="logo-item">Fluxio</span>
+        <span class="logo-item">Marent Capital</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     DIENSTEN
+════════════════════════════════ -->
+<section class="section" id="diensten" aria-labelledby="diensten-heading">
+  <div class="wrap">
+
+    <div class="sec-head sr">
+      <span class="eyebrow">Diensten</span>
+      <h2 id="diensten-heading">Wat wij bouwen</h2>
+    </div>
+
+    <!-- Feature card: Productontwikkeling -->
+    <article class="svc-feature sr" aria-label="Dienst: Productontwikkeling">
+      <div>
+        <div class="svc-icon" aria-hidden="true">
+          <i data-lucide="layout-dashboard" width="22" height="22"></i>
+        </div>
+        <h3 style="margin-top:var(--s3)">Productontwikkeling</h3>
+        <div class="tags">
+          <span class="tag">Web</span>
+          <span class="tag">App</span>
+          <span class="tag">SaaS</span>
+          <span class="tag">Portals</span>
+        </div>
+      </div>
+      <div>
+        <p>Webapplicaties, portals en mobiele apps op maat. Van een intern medewerkersportaal tot een klantgericht SaaS-product dat moet schalen — wij denken mee als productpartner, niet als uitvoerder. Requirements, architectuur, UX en engineering onder één dak, zonder de overhead van een groot bureau.</p>
+        <p style="margin-top:var(--s3); font-size:.875rem; line-height:1.7">Wij zijn pas tevreden als het systeem niet alleen werkt bij oplevering, maar ook zes maanden later nog begrijpelijk en uitbreidbaar is voor het team dat het overneemt.</p>
+      </div>
+    </article>
+
+    <!-- 3 smaller cards -->
+    <div class="svc-grid">
+      <article class="svc-card sr" aria-label="Dienst: Integraties en API's">
+        <div class="svc-icon" aria-hidden="true">
+          <i data-lucide="git-merge" width="22" height="22"></i>
+        </div>
+        <h3>Integraties &amp; API's</h3>
+        <p>Koppeling met CRM, ERP, betaalsystemen of externe datapartners. Robuust, goed gedocumenteerd en veilig — ook als de externe API slecht ontworpen is.</p>
+        <div class="tags">
+          <span class="tag">REST</span>
+          <span class="tag">GraphQL</span>
+          <span class="tag">Webhooks</span>
+        </div>
+      </article>
+
+      <article class="svc-card sr" style="transition-delay:.1s" aria-label="Dienst: Data en automatisering">
+        <div class="svc-icon" aria-hidden="true">
+          <i data-lucide="bar-chart-2" width="22" height="22"></i>
+        </div>
+        <h3>Data &amp; automatisering</h3>
+        <p>Rapportages, pipelines en werkstroomautomatisering die handwerk elimineren. Van dagelijkse exports naar een volledig geautomatiseerde dataomgeving.</p>
+        <div class="tags">
+          <span class="tag">ETL</span>
+          <span class="tag">Reporting</span>
+          <span class="tag">Pipelines</span>
+        </div>
+      </article>
+
+      <article class="svc-card sr" style="transition-delay:.2s" aria-label="Dienst: Onderhoud en doorontwikkeling">
+        <div class="svc-icon" aria-hidden="true">
+          <i data-lucide="refresh-cw" width="22" height="22"></i>
+        </div>
+        <h3>Onderhoud &amp; doorontwikkeling</h3>
+        <p>Langetermijn partnerschap voor bestaande software. Vaste contactpersoon, voorspelbaar budget, een team dat de codebase écht kent.</p>
+        <div class="tags">
+          <span class="tag">Retainer</span>
+          <span class="tag">Bugfixes</span>
+          <span class="tag">Roadmap</span>
+        </div>
+      </article>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     AANPAK
+════════════════════════════════ -->
+<section class="section aanpak-section" id="aanpak" aria-labelledby="aanpak-heading">
+  <div class="wrap">
+
+    <div class="sec-head sr">
+      <span class="eyebrow">Werkwijze</span>
+      <h2 id="aanpak-heading">Hoe wij werken</h2>
+      <p style="margin-top:var(--s3); max-width:52ch; font-size:1.05rem; line-height:1.75">
+        Een gestructureerd proces met duidelijke deliverables per fase — zodat u precies weet waar uw investering naartoe gaat.
+      </p>
+    </div>
+
+    <div class="timeline" role="list">
+
+      <div class="tl-item sr" role="listitem">
+        <div class="tl-num" aria-hidden="true">01</div>
+        <div class="tl-content">
+          <span class="eyebrow">Discovery</span>
+          <h3 style="margin-top:4px">Begrijpen voor bouwen</h3>
+          <p>Intake, stakeholder interviews, technische inventarisatie en risico-inventarisatie. Wij stellen de juiste vragen voordat er ook maar één regel code wordt geschreven.</p>
+          <div class="tags">
+            <span class="tag">Requirementsdocument</span>
+            <span class="tag">Technisch advies</span>
+            <span class="tag">Offerte</span>
+          </div>
+        </div>
+        <div class="tl-meta">Week 1–2</div>
+      </div>
+
+      <div class="tl-item sr" role="listitem">
+        <div class="tl-num" aria-hidden="true">02</div>
+        <div class="tl-content">
+          <span class="eyebrow">Design</span>
+          <h3 style="margin-top:4px">Architectuur en scope</h3>
+          <p>UX-schets, informatiestructuur en technische architectuur vastgelegd. Definitieve scope, tijdlijn en budget bevestigd vóór de bouw begint.</p>
+          <div class="tags">
+            <span class="tag">Wireframes</span>
+            <span class="tag">Architectuurdiagram</span>
+            <span class="tag">Projectplan</span>
+          </div>
+        </div>
+        <div class="tl-meta">Week 2–4</div>
+      </div>
+
+      <div class="tl-item sr" role="listitem">
+        <div class="tl-num" aria-hidden="true">03</div>
+        <div class="tl-content">
+          <span class="eyebrow">Build</span>
+          <h3 style="margin-top:4px">Sprint-based ontwikkeling</h3>
+          <p>Iteratieve sprints met wekelijkse check-ins. U volgt de voortgang live via een staging-omgeving. Geen verrassingen bij oplevering.</p>
+          <div class="tags">
+            <span class="tag">CI/CD-pipeline</span>
+            <span class="tag">Staging-omgeving</span>
+            <span class="tag">Wekelijkse demos</span>
+          </div>
+        </div>
+        <div class="tl-meta">Week 4–10</div>
+      </div>
+
+      <div class="tl-item sr" role="listitem">
+        <div class="tl-num" aria-hidden="true">04</div>
+        <div class="tl-content">
+          <span class="eyebrow">Launch</span>
+          <h3 style="margin-top:4px">Gecontroleerde go-live</h3>
+          <p>UAT, security review, performance controle en gecontroleerde deployment. Monitoring en alerting ingericht vóór de eerste gebruiker inlogt.</p>
+          <div class="tags">
+            <span class="tag">UAT-rapport</span>
+            <span class="tag">Monitoring</span>
+            <span class="tag">Documentatie</span>
+          </div>
+        </div>
+        <div class="tl-meta">Week 10–12</div>
+      </div>
+
+      <div class="tl-item sr" role="listitem">
+        <div class="tl-num" aria-hidden="true">05</div>
+        <div class="tl-content">
+          <span class="eyebrow">Iterate</span>
+          <h3 style="margin-top:4px">Doorontwikkeling op basis van gebruik</h3>
+          <p>Na launch beginnen wij pas echt. Maandelijkse doorontwikkeling op basis van gebruiksdata, feedback en uw roadmap — met een vast team dat de codebase kent.</p>
+          <div class="tags">
+            <span class="tag">Maandelijks rapport</span>
+            <span class="tag">Roadmap-sessies</span>
+            <span class="tag">Retainer optioneel</span>
+          </div>
+        </div>
+        <div class="tl-meta">Doorlopend</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     CASES
+════════════════════════════════ -->
+<section class="section cases-section" id="cases" aria-labelledby="cases-heading">
+  <div class="wrap">
+
+    <div class="sec-head sr">
+      <span class="eyebrow">Casestudy's</span>
+      <h2 id="cases-heading">Resultaten die tellen</h2>
+      <p style="margin-top:var(--s3); max-width:50ch; font-size:1rem; line-height:1.75">
+        Drie trajecten uit de praktijk — met bescheiden cijfers die kloppen, en een eerlijke beschrijving van het vraagstuk.
+      </p>
+    </div>
+
+    <div class="cases-grid">
+
+      <!-- Case 1: Large -->
+      <article class="case-card sr" aria-label="Case: HR-tech onboarding portal">
+        <span class="case-sector">HR &amp; Recruitment</span>
+        <h3>Van handmatige onboarding naar een zelfstandig portaal</h3>
+        <p class="case-problem">
+          Een groeiend recruitmentsplatform verwerkte alle kandidaat-onboarding handmatig via e-mail en spreadsheets. Bij 40 nieuwe instroom per maand was dit niet langer houdbaar — fouten, vertraging en frustratie bij HR-medewerkers.
+        </p>
+        <div class="case-metric">
+          <div class="case-metric-num">–62%</div>
+          <div class="case-metric-label">minder doorlooptijd per onboarding</div>
+        </div>
+        <div class="case-stack" aria-label="Stack: Laravel, Vue.js, AWS RDS">
+          <i data-lucide="layers" width="12" height="12" aria-hidden="true"></i>
+          Laravel · Vue.js · AWS RDS
+        </div>
+      </article>
+
+      <!-- Cases 2 + 3: stacked right -->
+      <div class="cases-col">
+        <article class="case-card sr" style="transition-delay:.12s" aria-label="Case: Logistics dashboard">
+          <span class="case-sector">Logistiek</span>
+          <h3>Realtime wagenparkbeheer voor drie vestigingen</h3>
+          <p class="case-problem">
+            Managementrapportages werden handmatig samengesteld uit losse Excel-bestanden. Beslissingen liepen structureel één dag achter op de werkelijkheid.
+          </p>
+          <div class="case-metric">
+            <div class="case-metric-num">–40%</div>
+            <div class="case-metric-label">minder handmatige rapportages per week</div>
+          </div>
+          <div class="case-stack" aria-label="Stack: Node.js, PostgreSQL, React">
+            <i data-lucide="layers" width="12" height="12" aria-hidden="true"></i>
+            Node.js · PostgreSQL · React
+          </div>
+        </article>
+
+        <article class="case-card sr" style="transition-delay:.24s" aria-label="Case: Financial data pipeline">
+          <span class="case-sector">Financiële dienstverlening</span>
+          <h3>Dagelijkse consolidatie van externe databronnen</h3>
+          <p class="case-problem">
+            Analisten besteedden meerdere uren per dag aan het handmatig samenvoegen van data uit vier externe bronnen. Het proces was foutgevoelig en niet auditeerbaar.
+          </p>
+          <div class="case-metric">
+            <div class="case-metric-num">100%</div>
+            <div class="case-metric-label">geautomatiseerde dagrapportage, nul handmatig werk</div>
+          </div>
+          <div class="case-stack" aria-label="Stack: Python, dbt, Google Cloud">
+            <i data-lucide="layers" width="12" height="12" aria-hidden="true"></i>
+            Python · dbt · Google Cloud
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     SECURITY
+════════════════════════════════ -->
+<section class="section" id="security" aria-labelledby="security-heading">
+  <div class="wrap">
+    <div class="security-grid">
+
+      <!-- Text + principles -->
+      <div>
+        <div class="sec-head sr" style="margin-bottom:0">
+          <span class="eyebrow">Security &amp; Betrouwbaarheid</span>
+          <h2 id="security-heading">Ontworpen voor de lange termijn</h2>
+          <p style="margin-top:var(--s3); max-width:48ch; font-size:1.05rem; line-height:1.75">
+            Geen certificeringen die er niet zijn. Wij bouwen met principes die bewezen werken — structureel, niet als toevoeging achteraf.
+          </p>
+        </div>
+
+        <div class="security-list">
+          <div class="sec-item sr">
+            <div class="sec-item-icon" aria-hidden="true">
+              <i data-lucide="shield" width="18" height="18"></i>
+            </div>
+            <div class="sec-item-body">
+              <h4>Least privilege</h4>
+              <p>Elke dienst en gebruiker krijgt precies de rechten die nodig zijn — niet meer. Toegangsbeheer als basisprincipe, niet als nagedachte.</p>
+            </div>
+          </div>
+
+          <div class="sec-item sr" style="transition-delay:.07s">
+            <div class="sec-item-icon" aria-hidden="true">
+              <i data-lucide="file-text" width="18" height="18"></i>
+            </div>
+            <div class="sec-item-body">
+              <h4>Gestructureerde logging &amp; auditing</h4>
+              <p>Alle relevante acties worden vastgelegd. Wie deed wat, wanneer. Herleidbaar bij een incident of een externe audit.</p>
+            </div>
+          </div>
+
+          <div class="sec-item sr" style="transition-delay:.14s">
+            <div class="sec-item-icon" aria-hidden="true">
+              <i data-lucide="archive" width="18" height="18"></i>
+            </div>
+            <div class="sec-item-body">
+              <h4>Dagelijkse backups met hersteltest</h4>
+              <p>Automatische backups én periodieke hersteltests. Wij gaan er niet vanuit dat het werkt — we verifiëren het.</p>
+            </div>
+          </div>
+
+          <div class="sec-item sr" style="transition-delay:.21s">
+            <div class="sec-item-icon" aria-hidden="true">
+              <i data-lucide="git-pull-request" width="18" height="18"></i>
+            </div>
+            <div class="sec-item-body">
+              <h4>Code review bij elke wijziging</h4>
+              <p>Geen enkele regel in productie zonder review. Four-eyes als standaard, niet als uitzondering.</p>
+            </div>
+          </div>
+
+          <div class="sec-item sr" style="transition-delay:.28s">
+            <div class="sec-item-icon" aria-hidden="true">
+              <i data-lucide="eye" width="18" height="18"></i>
+            </div>
+            <div class="sec-item-body">
+              <h4>Threat modeling &amp; GDPR-bewust ontwerp</h4>
+              <p>Risico-inventarisatie in de designfase. Privacy by design als uitgangspunt — zodat persoonsgegevens correct worden behandeld van dag één.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo -->
+      <div class="sr" style="transition-delay:.2s">
+        <img
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
+          alt="Twee engineers voeren een technische review uit op een laptop — oog voor detail, rustige concentratie"
+          class="sec-photo"
+          loading="lazy"
+          width="800"
+          height="600"
+        />
+        <p class="photo-caption">Code review — dagelijks proces</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     PRICING
+════════════════════════════════ -->
+<section class="section pricing-section" id="tarieven" aria-labelledby="pricing-heading">
+  <div class="wrap">
+
+    <div class="sec-head sr">
+      <span class="eyebrow">Investering</span>
+      <h2 id="pricing-heading">Transparant over tarieven</h2>
+      <p style="margin-top:var(--s3); max-width:50ch; font-size:1rem; line-height:1.75; color:rgba(255,255,255,.55)">
+        Geen verborgen kosten. Twee modellen — afhankelijk van of u een eenmalig product wilt bouwen of een langetermijn ontwikkelpartner zoekt.
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <div class="pricing-card sr">
+        <div class="pricing-name">Start</div>
+        <div class="pricing-price">Vanaf €25.000 <sub>/ project</sub></div>
+        <p class="pricing-desc">Eénmalig projecttraject met afgebakende scope, vaste prijs en heldere deadline. Geschikt voor nieuwe producten en duidelijk omschreven opdrachten.</p>
+        <ul class="pricing-features">
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Discovery &amp; architectuur inbegrepen</li>
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Wekelijkse voortgangsrapportage</li>
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>60 dagen garantieperiode na launch</li>
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Volledige broncodeoverdracht</li>
+        </ul>
+        <a href="#contact" class="btn btn-ghost-white" style="margin-top:auto">
+          Vraag een offerte aan
+          <i data-lucide="arrow-right" width="16" height="16" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="pricing-card sr" style="transition-delay:.15s">
+        <div class="pricing-name">Partnership</div>
+        <div class="pricing-price">Vanaf €3.500 <sub>/ maand</sub></div>
+        <p class="pricing-desc">Doorlopende retainer voor onderhoud, doorontwikkeling en uitbreiding. Vaste capaciteit, vaste contactpersoon, voorspelbaar budget per kwartaal.</p>
+        <ul class="pricing-features">
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Maandelijkse roadmap-sessie</li>
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Prioriteit bij urgente issues</li>
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Monitoring &amp; incidentbeheer</li>
+          <li><i data-lucide="check" width="15" height="15" aria-hidden="true"></i>Minimale looptijd 3 maanden</li>
+        </ul>
+        <a href="#contact" class="btn btn-primary" style="margin-top:auto">
+          Plan een kennismaking
+          <i data-lucide="arrow-right" width="16" height="16" aria-hidden="true"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     CONTACT
+════════════════════════════════ -->
+<section class="section" id="contact" aria-labelledby="contact-heading">
+  <div class="wrap">
+    <div class="contact-grid">
+
+      <!-- Photo -->
+      <div class="sr">
+        <img
+          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80"
+          alt="Strak ingericht kantoor met daglicht en een houten bureau — een uitnodigende ruimte voor een goed gesprek"
+          class="contact-photo"
+          loading="lazy"
+          width="900"
+          height="600"
+        />
+        <p class="photo-caption">Ons kantoor, Amsterdam-Zuid</p>
+
+        <div style="margin-top:var(--s6); padding-top:var(--s5); border-top:1px solid var(--hairline)">
+          <p style="font-size:.84rem; line-height:1.8; color:var(--charcoal)">
+            <strong style="font-weight:600; color:var(--ink)">Atelier Software B.V.</strong><br>
+            Herengracht 182<br>
+            1016 BR Amsterdam<br><br>
+            <a href="mailto:hallo@ateliersoftware.nl" style="color:var(--accent); transition:opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">hallo@ateliersoftware.nl</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div>
+        <div class="contact-intro sr">
+          <span class="eyebrow">Contact</span>
+          <h2 id="contact-heading">Laten we kennis maken.</h2>
+          <p>Een intake duurt 45 minuten. Geen verkooppraatje — een eerlijk gesprek over uw situatie en of wij de juiste partij zijn om dat op te lossen.</p>
+        </div>
+
+        <form class="form sr" id="contact-form" novalidate aria-label="Intakeformulier" style="transition-delay:.1s">
+          <div class="form-group">
+            <label for="f-name" class="form-label">Naam <span aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="f-name"
+              name="name"
+              class="form-input"
+              placeholder="Jan de Vries"
+              required
+              autocomplete="name"
+              aria-required="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="f-email" class="form-label">E-mailadres <span aria-hidden="true">*</span></label>
+            <input
+              type="email"
+              id="f-email"
+              name="email"
+              class="form-input"
+              placeholder="jan@organisatie.nl"
+              required
+              autocomplete="email"
+              aria-required="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="f-msg" class="form-label">Uw vraagstuk</label>
+            <textarea
+              id="f-msg"
+              name="message"
+              class="form-textarea"
+              placeholder="Beschrijf kort uw situatie — wat wilt u bouwen of oplossen?"
+              rows="5"
+            ></textarea>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary" id="form-submit">
+              Verstuur aanvraag
+              <i data-lucide="send" width="16" height="16" aria-hidden="true"></i>
+            </button>
+          </div>
+        </form>
+
+        <div class="form-success" id="form-success" role="status" aria-live="polite">
+          <i data-lucide="check-circle-2" width="44" height="44" style="color:var(--accent)" aria-hidden="true"></i>
+          <h3>Aanvraag ontvangen.</h3>
+          <p style="color:var(--charcoal)">Wij nemen binnen één werkdag contact op. Tot snel.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="wrap">
+    <div class="footer-top">
+
+      <div>
+        <div class="footer-name">Atelier Software</div>
+        <p class="footer-desc">Maatwerk software voor organisaties die kwaliteit serieus nemen. Gevestigd in Amsterdam.</p>
+      </div>
+
+      <div>
+        <p class="footer-col-label">Navigatie</p>
+        <ul class="footer-links">
+          <li><a href="#diensten">Diensten</a></li>
+          <li><a href="#aanpak">Aanpak</a></li>
+          <li><a href="#cases">Cases</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer-col-label">Bereikbaar</p>
+        <ul class="footer-links">
+          <li><a href="mailto:hallo@ateliersoftware.nl">hallo@ateliersoftware.nl</a></li>
+          <li>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="Atelier Software op LinkedIn (opent nieuw tabblad)">
+              LinkedIn
+            </a>
+          </li>
+          <li><a href="#">Privacyverklaring</a></li>
+          <li><a href="#">KVK 12345678</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2025 Atelier Software B.V. — Amsterdam</span>
+      <span>Gebouwd met aandacht voor kwaliteit.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Init Lucide icons
+  document.addEventListener('DOMContentLoaded', function () {
+    lucide.createIcons();
+  });
+
+  // Sticky header shadow
+  const hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', function () {
+    hdr.classList.toggle('scrolled', window.scrollY > 16);
+  }, { passive: true });
+
+  // Mobile menu
+  const toggle = document.getElementById('mobile-toggle');
+  const menu   = document.getElementById('mobile-menu');
+
+  toggle.addEventListener('click', function () {
+    const open = menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Menu sluiten' : 'Menu openen');
+    lucide.createIcons();
+  });
+
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Menu openen');
+    });
+  });
+
+  // Scroll reveal
+  const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (motionOK) {
+    const els = document.querySelectorAll('.sr');
+    const io  = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('on');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -36px 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll('.sr').forEach(function (el) {
+      el.classList.add('on');
+    });
+  }
+
+  // Smooth scroll with nav offset
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      const id = this.getAttribute('href');
+      if (id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      const y = target.getBoundingClientRect().top + window.scrollY - 76;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  // Contact form
+  const form    = document.getElementById('contact-form');
+  const success = document.getElementById('form-success');
+  const submitBtn = document.getElementById('form-submit');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const nameEl  = document.getElementById('f-name');
+    const emailEl = document.getElementById('f-email');
+    let valid = true;
+
+    nameEl.classList.remove('error');
+    emailEl.classList.remove('error');
+
+    if (!nameEl.value.trim()) {
+      nameEl.classList.add('error');
+      nameEl.focus();
+      valid = false;
+    }
+
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailEl.value.trim() || !emailRe.test(emailEl.value.trim())) {
+      emailEl.classList.add('error');
+      if (valid) emailEl.focus();
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verzenden…';
+
+    setTimeout(function () {
+      form.style.display = 'none';
+      success.classList.add('show');
+      lucide.createIcons();
+    }, 900);
+  });
+
+  // Clear error state on input
+  ['f-name', 'f-email'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () {
+      this.classList.remove('error');
+    });
+  });
+</script>
+
+</body>
+</html>
